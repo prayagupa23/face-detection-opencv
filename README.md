@@ -4,5 +4,5 @@ Face detection using open cv, live camera feed, image detection.
 Tech Stack : 
 - python
 
-  IDE used :
+IDE used :
 - visual studio code
