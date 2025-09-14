@@ -1,40 +1,25 @@
-import cv2 as cv
-import sys
-import numpy as np
+import cv2
 
-# cam = cv.VideoCapture(0)
-# frame_wid = int(cam.get(cv.CAP_PROP_FRAME_WIDTH))
-# frame_height= int(cam.get(cv.CAP_PROP_FRAME_HEIGHT))
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
-# fourcc = cv.VideoWriter_fourcc(*'mp4v')
-# out= cv.VideoWriter('output.mp4',fourcc,20.0,(frame_wid,frame_height))
+cap = cv2.VideoCapture(0)
 
-# while True:
-#     ret, frame = cam.read()
-#     out.write(frame)
-#     cv.imshow("Camera",frame)
-#     if cv.waitKey(0) == ord("q"):
-#         break
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        break
 
-# cam.release()
-# out.release()
-# cv.destroyAllWindows()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-img = cv.imread('starry_night.jpg') # returns a numpy array
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
-# after reading, the image data will be stored in 'cv::Mat' or 'Mat' object.
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-if img is None:
-    sys.exit("Could not find the image")
+    cv2.imshow("Face Detected", frame)
 
-cv.imshow("Sample window",img) # displays the image loaded by imread. Needs a string, image array data
+    if cv2.waitKey(1) & 0xFF == ord("q"):
+        break
 
-# In Python, the image data is stored as a NumPy array (np.ndarray).
-
-key = cv.waitKey(0)
-if key == ord("k"):
-    cv.imwrite("starry_night_copy.png",img) # writes the image(modified/same) back to computer storage
-cv.destroyAllWindows()
-print("All open cv windows closed")
-print("Script executed successfully")
-
+cap.release()
+cv2.destroyAllWindows()
